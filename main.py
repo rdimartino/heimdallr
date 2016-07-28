@@ -11,7 +11,7 @@ api = twitter.Api(consumer_key=settings.consumer_key,
                   access_token_key=settings.access_token_key,
                   access_token_secret=settings.access_token_secret)
 url = 'http://projects.fivethirtyeight.com/2016-election-forecast/index.html'
-history = 'update.txt'
+history = '/var/www/heimdallr/update.txt'
 
 
 # Soup processing functions
