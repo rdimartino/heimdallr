@@ -33,13 +33,16 @@ def get_data(soup):  # Returns list of tuples with candidate probabilities
 
 # Tweet functions
 def tweet(data, timestamp):  # Post the tweet
-    status = ('2016 Presidential Election Probabilities!\n'
+    status = ('2016 US Pres. Election Chances!\n'
               + ''.join(['{0} - {1}%\n'.format(format_name(d[0]), d[2]) for d in data])
               + 'Updated: {:%b %d, %H:%M:%S} UTC\n'.format(timestamp)
               + url)
     try:
         api.PostUpdate(status, verify_status_length=False)
-    except:
+    except Exception as e:
+        with open('/var/www/heimdallr/errors.txt','a') as ef:
+            ef.write('Trying to tweet:\n'+status+'\n')
+            ef.write(str(e)+'\n')
         pass
     return None
 
