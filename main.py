@@ -16,19 +16,28 @@ history = '/var/www/heimdallr/update.txt'
 
 # Soup processing functions
 def span_has_data_tag(tag):  # Soup filter to find timestamps
-    return tag.name == 'span' and tag.has_attr('data-timestamp')
+    return tag.name == 'span' and tag.has_attr('data-updated')
 
 
 def get_timestamp(soup):  # Returns maximum timestamp from 538
-    return max([dateutil.parser.parse(tag['data-timestamp']) for tag in soup.find_all(span_has_data_tag)])
+    return max([dateutil.parser.parse(tag['data-updated'].replace("|","")) for tag in soup.find_all(span_has_data_tag)])
 
 
 def get_data(soup):  # Returns list of tuples with candidate probabilities
     tags = (soup
-            .find('div', {'data-card-id':'US-winprob-sentence'})
-            .find('div', class_='powerbarnoheads')
-            .find_all('p', class_='candidate-val winprob'))
-    return [(tag.next_sibling.string, tag['data-party'], tag.contents[0]) for tag in tags]
+              .find('div', {'data-card-id':'US-winprob-sentence'})
+              .find('div', class_='powerbarheads')
+              .find_all('div', class_='candidate-text'))
+    return [(tag.find('p',class_='label-head').contents[0],
+             tag.find('p',class_='candidate-val winprob').contents[0], 
+             tag.find('p',class_='candidate-val')['data-party'][0])
+             for tag in tags]
+    # 538 changed page layout on 9/20
+    #tags = (soup
+    #        .find('div', {'data-card-id':'US-winprob-sentence'})
+    #        .find('div', class_='powerbarnoheads')
+    #        .find_all('p', class_='candidate-val winprob'))
+    #return [(tag.next_sibling.string, tag['data-party'], tag.contents[0]) for tag in tags]
 
 
 # Tweet functions
