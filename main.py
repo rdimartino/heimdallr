@@ -16,11 +16,11 @@ history = '/var/www/heimdallr/update.txt'
 
 # Soup processing functions
 def span_has_data_tag(tag):  # Soup filter to find timestamps
-    return tag.name == 'span' and tag.has_attr('data-timestamp')
+    return tag.name == 'span' and tag.has_attr('data-updated')
 
 
 def get_timestamp(soup):  # Returns maximum timestamp from 538
-    return max([dateutil.parser.parse(tag['data-timestamp']) for tag in soup.find_all(span_has_data_tag)])
+    return max([dateutil.parser.parse(tag['data-updated'].replace("|","")) for tag in soup.find_all(span_has_data_tag)])
 
 
 def get_data(soup):  # Returns list of tuples with candidate probabilities
